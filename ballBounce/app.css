@@ -5,6 +5,17 @@ body {
 	align-items: center;
 }
 canvas {
-	margin: 50px auto;
+	margin: 30px;
 	border: 1px solid black;
+}
+button {
+	margin-top: 20px;
+	font-size: 2em;
+	padding: 5px;
+	width: 40%;
+	background-color: cadetblue;
+	border: none;
+	border-radius: 100px;
+	cursor: pointer;
+	outline: none;
 }
