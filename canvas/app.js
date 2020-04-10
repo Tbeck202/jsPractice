@@ -50,7 +50,8 @@ const makeCanvas = () => {
 		for (let i = 0; i < 100; i++) {
 			let radius = Math.floor(Math.random() * 50);
 			let x = Math.floor(Math.random() * (innerWidth - radius * 2) + radius);
-			let y = Math.floor(Math.random() * (innerHeight - radius * 2) + radius);
+			// let y = Math.floor(Math.random() * (innerHeight - radius * 2) + radius);
+			let y = 30;
 			let dx = Math.floor((Math.random() - 0.5) * 20);
 			let dy = Math.floor((Math.random() - 0.5) * 20);
 
