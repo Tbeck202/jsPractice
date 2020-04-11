@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The ol' todo app</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="https://kit.fontawesome.com/c169a5a530.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1>The ol' todo list</h1>
+            <p class="text info hidden" id="err"></p>
+            <!-- <p class="text info">Create tasks as needed and be sure to check them off when you're done!</p> -->
+        </div>
+        <div class="container todo">
+            <input type="text" class="add-item" placeholder="What do you need to do?">
+            <button class="btn" id="make-todo">Create todo</button>
+            <ul class="list">
+                <!-- <li class="item">
+                    <p class="text item-text">Todo Item 1</p>
+                    <span class="mark-done check-mark">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="mark-done delete hidden">x</span>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

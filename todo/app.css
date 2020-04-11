@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800&display=swap');
+
+body {
+	margin: 0;
+	padding: 0;
+}
+* {
+	font-family: 'Nunito', sans-serif;
+	line-height: 1.5;
+	font-size: 16px;
+}
+.wrapper {
+	border: 1px solid rgb(136, 174, 179);
+	border-radius: 20px;
+	width: 90%;
+	max-width: 600px;
+	margin: 10px auto 0;
+	background-color: rgb(234, 252, 255);
+}
+.container {
+	margin: 0 auto;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+}
+h1 {
+	text-align: center;
+	font-size: 2em;
+	margin: 0;
+	color: rgb(63, 72, 82);
+	text-transform: uppercase;
+}
+p {
+	padding: 0;
+}
+#err {
+	color: tomato;
+	margin-bottom: 0;
+}
+.add-item {
+	margin: 0 auto 15px;
+	width: 80%;
+	height: 40px;
+	max-width: 500px;
+	border-radius: 10px;
+	border: 1px solid rgb(157, 163, 168);
+	border-radius: 10px;
+	outline: none;
+	text-align: center;
+}
+.add-item::placeholder {
+	text-align: center;
+}
+
+button {
+	margin: 0 auto;
+	padding: 5px;
+	width: 50%;
+	max-width: 300px;
+	background-color: mediumseagreen;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 1.2em;
+	cursor: pointer;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+button:hover {
+	background-color: rgb(47, 143, 90);
+}
+button:active {
+	box-shadow: none;
+}
+.text {
+	text-align: center;
+}
+.list {
+	padding: 0;
+}
+
+li {
+	margin: 2.5px auto;
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 80%;
+	max-width: 500px;
+	border: 1px solid rgb(157, 163, 168);
+	border-radius: 10px;
+	background-color: gainsboro;
+}
+.item-text {
+	margin: 0;
+	padding: 10px 20px;
+	font-size: 1.2em;
+	color: rgb(65, 75, 85);
+}
+.line-thru {
+	text-decoration: line-through;
+	cursor: pointer;
+	color: rgba(65, 75, 85, .5);
+}
+
+.mark-done {
+	padding: 0 20px;
+	color: mediumseagreen;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+.fa-check {
+	cursor: pointer;
+}
+.delete {
+	cursor: pointer;
+	color: tomato;
+	font-weight: bold;
+}
+.hidden {
+	display: none;
+}
