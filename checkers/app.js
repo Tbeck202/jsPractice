@@ -67,29 +67,102 @@ squares.forEach((square, idx) => {
 		blackPieces.push(piece);
 	}
 });
-
+let allPieces = [ ...redPieces, ...blackPieces ];
 //GAME LOGIC
 
-blackPieces.forEach((p) => {
-	p.addEventListener('click', (e) => {
-		blackPieces.forEach((p) => {
-			p.classList.remove('selected');
+let pieceSelected = false;
+//CURRENT POSITION OF SELECTED PIECE
+let selectedPiece;
+let selectedPieceIdx;
+//POSITION YOU'D LIKE TO MOVE TO
+let selectedSq;
+let selectedSqIdx;
+let selectedSqChildren;
+document.body.addEventListener('click', () => {
+	if (pieceSelected === true) {
+		board.addEventListener('click', (bEvt) => {
+			console.log('clicked');
+			let piece = bEvt;
+			// console.log(bEvt);
+			// BLACK PIECES MOVE LOGIC==========================
+			// let clickedRow = bEvt.target.parentElement;
+			// let validRow = selectedPiece.parentElement.parentElement.previousSibling;
+			// let moveSquareClasslist = bEvt.target.classList;
+			// if (pieceSelected && moveSquareClasslist.contains('blackSquare') && validRow === clickedRow) {
+			// 	bEvt.target.append(selectedPiece);
+			// 	console.log('valid row');
+			// }
+			//============================
+
+			blkMove(piece);
 		});
-		p.classList.toggle('selected');
-		pieceSelected = true;
+	} else {
+		console.log('Pick a piece');
+	}
+});
+
+squares.forEach((sq, idx) => {
+	sq.addEventListener('click', (e) => {
+		selectedSq = sq;
+		selectedSqIdx = idx;
+		selectedSqChildren = e.target.children.length;
 		console.log(e);
+		// getRow(sq);
+		let eClassList = e.target.classList;
+		// console.log(idx);
+		//SELECT PIECE LOGIC=========================
+		if (eClassList.value.includes('piece') && !eClassList.value.includes('selected') && selectedSqChildren === 0) {
+			allPieces.forEach((pce) => {
+				pce.classList.remove('selected');
+			});
+			// console.log('Piece selected', e);
+			eClassList.toggle('selected');
+			pieceSelected = true;
+			selectedPiece = e.target;
+			selectedPieceIdx = idx;
+			// console.log(selectedPiece.parentElement);
+			//DE-SELECT PIECE LOGIC=====================================
+		} else if (eClassList.value.includes('selected')) {
+			eClassList.remove('selected');
+			pieceSelected = false;
+			selectedPieceIdx = undefined;
+		} //else if (pieceSelected && eClassList.value.includes('blackSquare')) {
+		// 	e.target.append(selectedPiece);
+		// }
+		// console.log('Piece selected', pieceSelected);
 	});
 });
 
-redPieces.forEach((p) => {
-	p.addEventListener('click', (e) => {
-		redPieces.forEach((p) => {
-			p.classList.remove('selected');
-		});
-		p.classList.toggle('selected');
-		board.addEventListener('click', (e) => {
-			console.log(e);
-		});
-		// console.log(e);
-	});
-});
+const blkMove = (piece) => {
+	let clickedRow = piece.target.parentElement;
+	let validRow = selectedPiece.parentElement.parentElement.previousSibling;
+	let moveSquareClasslist = piece.target.classList;
+	if (
+		pieceSelected &&
+		moveSquareClasslist.contains('blackSquare') &&
+		validRow === clickedRow &&
+		validSq() &&
+		selectedSqChildren === 0
+	) {
+		piece.target.append(selectedPiece);
+		selectedPiece.classList.remove('selected');
+		selectedPiece = undefined;
+		selectedPieceIdx = undefined;
+		selectedSq = undefined;
+		selectedSqIdx = undefined;
+		pieceSelected = false;
+		console.log('valid row');
+	}
+};
+
+const validSq = () => {
+	if (selectedPieceIdx - selectedSqIdx === 9 || selectedPieceIdx - selectedSqIdx === 7) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+// const getRow = (sq) => {
+// 	rows.forEach((row) => {});
+// };
