@@ -69,6 +69,7 @@ startGame.addEventListener('click', () => {
 });
 
 //	SELECT PIECE TO MOVE
+let piece;
 pieces.forEach((p, idx) => {
 	p.addEventListener('click', (e) => {
 		if (turnCounter % 2 === 0) {
@@ -76,13 +77,15 @@ pieces.forEach((p, idx) => {
 		} else if (turnCounter % 2 !== 0) {
 			turn = 'red';
 		}
-		let piece = e.target;
+		piece = e.target;
 		pieces.forEach((pp, idx) => {
 			if (piece.classList.contains(`${turn}Piece`)) {
 				pp.classList.remove('selected');
 				piece.classList.add('selected');
 			}
 		});
+		console.log('Desired piece to move');
+		console.log(e);
 	});
 });
 
@@ -90,16 +93,49 @@ pieces.forEach((p, idx) => {
 board.addEventListener('click', (e) => {
 	// console.log(e);
 	let desiredMove = e.target;
+	let moveIsValid = validMove(desiredMove);
 	pieces.forEach((p, idx) => {
 		if (p.classList.contains('selected') && !desiredMove.classList.contains('piece')) {
-			desiredMove.append(p);
+			// desiredMove.append(p);
+			console.log('desired move square');
+			console.log(e);
+
 			p.classList.remove('selected');
 		}
 	});
 });
+
+function validMove(desiredMove) {}
 
 //SET PLAYER TURN
 
 //CREATE MOVE LOGIC
 //CREATE PIECE CAPTURE LOGIC
 //CREATE WIN LOGIC
+
+// function validMoves(piece, turn) {
+// 	let currentRow = piece.parentElement.parentElement;
+// 	let currPieceIdx = getIdx(currentRow);
+// 	// console.log(currPieceIdx);
+// 	let validRow;
+
+// 	if (turn === 'black') {
+// 		validRow = piece.parentElement.parentElement.previousSibling;
+// 	} else if (turn === 'red') {
+// 		validRow = piece.parentElement.parentElement.nextSibling;
+// 	}
+// 	// console.log(validRow);
+// 	// let currPiecePosition = piece.
+// }
+
+// function getIdx(currentRow) {
+// 	let squaresOnRow = [ ...currentRow.children ];
+// 	console.log(squaresOnRow);
+// 	squaresOnRow.forEach((sq, idx) => {
+// 		console.log(sq.firstElementChild);
+// 		if (sq.firstElementChild.classList.contains('selected')) {
+// 			// console.log(idx);
+// 			return idx;
+// 		}
+// 	});
+// }
