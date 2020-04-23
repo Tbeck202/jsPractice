@@ -1,141 +1,139 @@
-const board = document.querySelector('.board'),
-	startGame = document.querySelector('#start');
-(rows = []), (squares = []), (pieces = []);
+const boardContainer = document.querySelector('.board');
+const startBtn = document.querySelector('#start');
 
-//INITIATE TURN COUNTER AND TRACK TURNS
-let turnCounter;
-let turn;
+//CHECKER BOARD LAYOUT OBJECT
+const board = {
+	rows: [
+		{
+			row: {
+				name: 'row1',
+				num: 1,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row2',
+				num: 2,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row3',
+				num: 3,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row4',
+				num: 4,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row5',
+				num: 5,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row6',
+				num: 6,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row7',
+				num: 7,
+				squares: []
+			}
+		},
+		{
+			row: {
+				name: 'row8',
+				num: 8,
+				squares: []
+			}
+		}
+	]
+};
 
-//CREATE ROWS
-for (let i = 0; i < 8; i++) {
-	const row = document.createElement('div');
-	rows.push(row);
-	row.classList.add('row');
-	board.append(row);
-}
-//CREATE SQUARES
-rows.forEach((row, idx) => {
+const pieces = [];
+
+//CREATE ROWS AND SQUARES
+board.rows.forEach((row, idx) => {
+	const newRow = document.createElement('div');
+	newRow.classList.add('row');
 	for (let i = 0; i < 8; i++) {
-		const square = document.createElement('div');
-		squares.push(square);
-		row.append(square);
-		square.classList.add('square');
-		formatSquares(square, idx, i);
+		const newSquare = document.createElement('div');
+		newSquare.classList.add('square');
+		setSqColor(newSquare, idx, i);
+		newRow.append(newSquare);
+		row.row.squares.push(newSquare);
 	}
+	boardContainer.append(newRow);
 });
-
-//==FORMAT AND COLOR SQUARES
-function formatSquares(square, rowidx, squareidx) {
+//FORMAT SQUARE COLORS
+function setSqColor(square, rowidx, sqidx) {
 	if (rowidx % 2 === 0) {
-		if (squareidx % 2 === 0) {
+		if (sqidx % 2 === 0) {
 			square.classList.add('redSquare');
 		} else {
 			square.classList.add('blackSquare');
 		}
 	} else {
-		if (squareidx % 2 === 0) {
-			square.classList.add('blackSquare');
-		} else {
+		if (sqidx % 2 !== 0) {
 			square.classList.add('redSquare');
+		} else {
+			square.classList.add('blackSquare');
 		}
 	}
 }
 
-//CREATE PEICES
+//CREATE PIECES
 for (let i = 0; i < 16; i++) {
-	const piece = document.createElement('div');
-	piece.classList.add('piece');
+	const newPiece = document.createElement('div');
+	newPiece.classList.add('piece');
 	if (i < 8) {
-		piece.classList.add('redPiece');
+		newPiece.classList.add('redPiece');
 	} else {
-		piece.classList.add('blackPiece');
+		newPiece.classList.add('blackPiece');
 	}
-	pieces.push(piece);
+	pieces.push(newPiece);
 }
-
-//==FORMAT AND COLOR PIECES
-startGame.addEventListener('click', () => {
-	let squareCount = 0;
-	squares.forEach((sq, idx) => {
-		if (sq.classList.contains('blackSquare') && idx < 16) {
-			sq.append(pieces[squareCount]);
-			squareCount++;
-		} else if (sq.classList.contains('blackSquare') && idx >= 48) {
-			sq.append(pieces[squareCount]);
-			squareCount++;
+//PLACE PIECES ON BOARD
+startBtn.addEventListener('click', () => {
+	let pieceCount = 0;
+	board.rows.forEach((row, idx) => {
+		if (idx < 2 || idx > 5) {
+			row.row.squares.forEach((sq, sqidx) => {
+				if (sq.classList.contains('blackSquare')) {
+					sq.append(pieces[pieceCount]);
+					pieceCount++;
+				}
+			});
 		}
 	});
-	turnCounter = 2;
 });
 
-//	SELECT PIECE TO MOVE
-let piece;
+//PIECES LOGIC
+//--SELECT PIECES
 pieces.forEach((p, idx) => {
 	p.addEventListener('click', (e) => {
-		if (turnCounter % 2 === 0) {
-			turn = 'black';
-		} else if (turnCounter % 2 !== 0) {
-			turn = 'red';
-		}
-		piece = e.target;
-		pieces.forEach((pp, idx) => {
-			if (piece.classList.contains(`${turn}Piece`)) {
-				pp.classList.remove('selected');
-				piece.classList.add('selected');
-			}
-		});
-		console.log('Desired piece to move');
-		console.log(e);
+		const piece = e.target;
+		toggleSelected(piece);
 	});
 });
 
-// SELECT SQUARE TO MOVE TO
-board.addEventListener('click', (e) => {
-	// console.log(e);
-	let desiredMove = e.target;
-	let moveIsValid = validMove(desiredMove);
-	pieces.forEach((p, idx) => {
-		if (p.classList.contains('selected') && !desiredMove.classList.contains('piece')) {
-			// desiredMove.append(p);
-			console.log('desired move square');
-			console.log(e);
-
-			p.classList.remove('selected');
-		}
+//--ACTIVATE SELECTED CLASS ON PIECE WHEN CLICKED
+function toggleSelected(piece) {
+	pieces.forEach((p) => {
+		p.classList.remove('selected');
 	});
-});
-
-function validMove(desiredMove) {}
-
-//SET PLAYER TURN
-
-//CREATE MOVE LOGIC
-//CREATE PIECE CAPTURE LOGIC
-//CREATE WIN LOGIC
-
-// function validMoves(piece, turn) {
-// 	let currentRow = piece.parentElement.parentElement;
-// 	let currPieceIdx = getIdx(currentRow);
-// 	// console.log(currPieceIdx);
-// 	let validRow;
-
-// 	if (turn === 'black') {
-// 		validRow = piece.parentElement.parentElement.previousSibling;
-// 	} else if (turn === 'red') {
-// 		validRow = piece.parentElement.parentElement.nextSibling;
-// 	}
-// 	// console.log(validRow);
-// 	// let currPiecePosition = piece.
-// }
-
-// function getIdx(currentRow) {
-// 	let squaresOnRow = [ ...currentRow.children ];
-// 	console.log(squaresOnRow);
-// 	squaresOnRow.forEach((sq, idx) => {
-// 		console.log(sq.firstElementChild);
-// 		if (sq.firstElementChild.classList.contains('selected')) {
-// 			// console.log(idx);
-// 			return idx;
-// 		}
-// 	});
-// }
+	piece.classList.add('selected');
+}
