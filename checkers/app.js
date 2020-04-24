@@ -64,7 +64,8 @@ const board = {
 };
 
 const pieces = [];
-
+let turnCount;
+let turn;
 //CREATE ROWS AND SQUARES
 board.rows.forEach((row, idx) => {
 	const newRow = document.createElement('div');
@@ -78,6 +79,7 @@ board.rows.forEach((row, idx) => {
 	}
 	boardContainer.append(newRow);
 });
+
 //FORMAT SQUARE COLORS
 function setSqColor(square, rowidx, sqidx) {
 	if (rowidx % 2 === 0) {
@@ -109,6 +111,7 @@ for (let i = 0; i < 16; i++) {
 //PLACE PIECES ON BOARD
 startBtn.addEventListener('click', () => {
 	let pieceCount = 0;
+	turnCount = 0;
 	board.rows.forEach((row, idx) => {
 		if (idx < 2 || idx > 5) {
 			row.row.squares.forEach((sq, sqidx) => {
@@ -121,19 +124,52 @@ startBtn.addEventListener('click', () => {
 	});
 });
 
-//PIECES LOGIC
-//--SELECT PIECES
-pieces.forEach((p, idx) => {
-	p.addEventListener('click', (e) => {
-		const piece = e.target;
-		toggleSelected(piece);
-	});
+//GAME LOGIC
+//
+//==PIECE POSITION VARIABLES
+let pieceRow;
+let pieceIdx;
+//===========================
+
+boardContainer.addEventListener('click', (e) => {
+	// console.log('event');
+	// console.log(e);
+	let target = e.target;
+	let eClassList = e.target.classList;
+	//PIECES=====================================
+	//==SET COLOR TURN==
+	if (turnCount % 2 === 0) {
+		turn = 'black';
+	} else {
+		turn = 'red';
+	}
+	//==ADD SELECTED CLASS AND SET PIECE POSITION==
+	if (eClassList.contains(`${turn}Piece`)) {
+		pieces.forEach((p, idx) => {
+			//ADD SELECTED CLASS TO PIECES=======
+			p.classList.remove('selected');
+			target.classList.add('selected');
+		});
+		getPiecePosition();
+	}
+	//==
+	if (eClassList.contains('blackSquare') && target.children.length === 0) {
+		console.log('valid move');
+	}
 });
 
-//--ACTIVATE SELECTED CLASS ON PIECE WHEN CLICKED
-function toggleSelected(piece) {
-	pieces.forEach((p) => {
-		p.classList.remove('selected');
+//PIECE POSITION FUNCTION=============================
+function getPiecePosition() {
+	board.rows.forEach((row, idx) => {
+		row.row.squares.forEach((sq, sqIdx) => {
+			if (sq.firstChild !== null) {
+				if (sq.firstChild.classList.contains('selected')) {
+					pieceIdx = sqIdx;
+					pieceRow = idx;
+					console.log(`piece index: ${pieceIdx}`);
+					console.log(`piece row: ${pieceRow}`);
+				}
+			}
+		});
 	});
-	piece.classList.add('selected');
 }
