@@ -64,8 +64,7 @@ const board = {
 };
 
 const pieces = [];
-let turnCount;
-let turn;
+
 //CREATE ROWS AND SQUARES
 board.rows.forEach((row, idx) => {
 	const newRow = document.createElement('div');
@@ -98,10 +97,10 @@ function setSqColor(square, rowidx, sqidx) {
 }
 
 //CREATE PIECES
-for (let i = 0; i < 16; i++) {
+for (let i = 0; i < 24; i++) {
 	const newPiece = document.createElement('div');
 	newPiece.classList.add('piece');
-	if (i < 8) {
+	if (i < 12) {
 		newPiece.classList.add('redPiece');
 	} else {
 		newPiece.classList.add('blackPiece');
@@ -113,7 +112,7 @@ startBtn.addEventListener('click', () => {
 	let pieceCount = 0;
 	turnCount = 0;
 	board.rows.forEach((row, idx) => {
-		if (idx < 2 || idx > 5) {
+		if (idx < 3 || idx > 4) {
 			row.row.squares.forEach((sq, sqidx) => {
 				if (sq.classList.contains('blackSquare')) {
 					sq.append(pieces[pieceCount]);
@@ -124,18 +123,24 @@ startBtn.addEventListener('click', () => {
 	});
 });
 
-//GAME LOGIC
 //
-//==PIECE POSITION VARIABLES
+//==GAME VARIABLES
+let turnCount;
+let turn;
+//
+//==PIECE AND PIECE POSITION VARIABLES
+let pieceIsSelected;
+let selectedPiece;
 let pieceRow;
 let pieceIdx;
-//===========================
 
+//GAME LOGIC=======================================
 boardContainer.addEventListener('click', (e) => {
 	// console.log('event');
 	// console.log(e);
 	let target = e.target;
 	let eClassList = e.target.classList;
+
 	//PIECES=====================================
 	//==SET COLOR TURN==
 	if (turnCount % 2 === 0) {
@@ -149,16 +154,24 @@ boardContainer.addEventListener('click', (e) => {
 			//ADD SELECTED CLASS TO PIECES=======
 			p.classList.remove('selected');
 			target.classList.add('selected');
+			selectedPiece = target;
+			pieceIsSelected = true;
 		});
 		getPiecePosition();
+		validMove();
 	}
-	//==
-	if (eClassList.contains('blackSquare') && target.children.length === 0) {
+	//==MOVE PIECE TO SELECTED VALID SQUARE========
+	if (eClassList.contains('blackSquare') && eClassList.contains('validMove') && target.children.length === 0) {
 		console.log('valid move');
+		target.append(selectedPiece);
+		selectedPiece.classList.remove('selected');
+		removeValidClass();
+		pieceIsSelected = false;
+		turnCount++;
 	}
 });
 
-//PIECE POSITION FUNCTION=============================
+//==PIECE POSITION FUNCTION=============================
 function getPiecePosition() {
 	board.rows.forEach((row, idx) => {
 		row.row.squares.forEach((sq, sqIdx) => {
@@ -173,3 +186,58 @@ function getPiecePosition() {
 		});
 	});
 }
+
+//==VALID MOVE FUNCTION=======
+function validMove() {
+	board.rows.forEach((row, idx) => {
+		row.row.squares.forEach((sq, sqidx) => {
+			sq.classList.remove('validMove');
+		});
+		if (turn === 'black') {
+			if (idx === pieceRow - 1) {
+				row.row.squares.forEach((sq, sqidx) => {
+					if (sq.children.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
+						sq.classList.add('validMove');
+					} else if (sq.children.length > 0) {
+						//JUMPABLE PIECE LOGIC*******************************************
+						let sqChildren = [ ...sq.children ];
+						console.log(sqChildren);
+					}
+					//STILL NEEDS WORK
+					//********************************************************************
+				});
+			}
+		} else {
+			if (idx === pieceRow + 1) {
+				row.row.squares.forEach((sq, sqidx) => {
+					if (sq.children.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
+						sq.classList.add('validMove');
+					}
+				});
+			}
+		}
+	});
+}
+
+function removeValidClass() {
+	board.rows.forEach((row) => {
+		row.row.squares.forEach((sq) => {
+			sq.classList.remove('validMove');
+		});
+	});
+}
+
+//VALID MOVE LOGIC=========================================
+// board.rows.forEach((row, idx) => {
+// 	row.row.squares.forEach((sq, sqidx) => {
+// 		sq.addEventListener('mouseover', (e) => {
+// 			if (
+// 				pieceIsSelected === true &&
+// 				e.target.children.length === 0 &&
+// 				e.target.classList.contains('blackSquare')
+// 			) {
+// 				// console.log('mouseover');
+// 			}
+// 		});
+// 	});
+// });
