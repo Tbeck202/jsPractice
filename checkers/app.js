@@ -127,6 +127,7 @@ startBtn.addEventListener('click', () => {
 //==GAME VARIABLES
 let turnCount;
 let turn;
+let opponent;
 //
 //==PIECE AND PIECE POSITION VARIABLES
 let pieceIsSelected;
@@ -145,8 +146,10 @@ boardContainer.addEventListener('click', (e) => {
 	//==SET COLOR TURN==
 	if (turnCount % 2 === 0) {
 		turn = 'black';
+		opponent - 'red';
 	} else {
 		turn = 'red';
+		opponent - 'black';
 	}
 	//==ADD SELECTED CLASS AND SET PIECE POSITION==
 	if (eClassList.contains(`${turn}Piece`)) {
@@ -196,11 +199,12 @@ function validMove() {
 		if (turn === 'black') {
 			if (idx === pieceRow - 1) {
 				row.row.squares.forEach((sq, sqidx) => {
-					if (sq.children.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
+					let sqChildren = [ ...sq.children ];
+					if (sqChildren.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
 						sq.classList.add('validMove');
-					} else if (sq.children.length > 0) {
+					} else if (sq.children.length > 0 && sqChildren[0].classList.contains(`${opponent}Piece`)) {
 						//JUMPABLE PIECE LOGIC*******************************************
-						let sqChildren = [ ...sq.children ];
+
 						console.log(sqChildren);
 					}
 					//STILL NEEDS WORK
@@ -226,6 +230,15 @@ function removeValidClass() {
 		});
 	});
 }
+
+//JUMPABLE PIECE LOGIC================
+// function jumpablePiece(sq, sqidx, sqChildren){
+//check if adjacent squares are occupied by opposing color piece
+// if(sqidx)
+//check if next adjacent square in same direction is occupied by any piece
+//check if there are any opposing pieces in either adjacent square
+//check if the sqaure behind opposing piece in same direction is open
+// }
 
 //VALID MOVE LOGIC=========================================
 // board.rows.forEach((row, idx) => {
