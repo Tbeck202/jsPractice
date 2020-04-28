@@ -134,6 +134,9 @@ let pieceIsSelected;
 let selectedPiece;
 let pieceRow;
 let pieceIdx;
+let jumpablePieces = [];
+let jumpablePieceRow;
+let jumpablePieceIdx;
 
 //GAME LOGIC=======================================
 boardContainer.addEventListener('click', (e) => {
@@ -141,16 +144,18 @@ boardContainer.addEventListener('click', (e) => {
 	// console.log(e);
 	let target = e.target;
 	let eClassList = e.target.classList;
-
+	emptyJumpable();
 	//PIECES=====================================
 	//==SET COLOR TURN==
 	if (turnCount % 2 === 0) {
 		turn = 'black';
-		opponent - 'red';
+		opponent = 'red';
 	} else {
 		turn = 'red';
-		opponent - 'black';
+		opponent = 'black';
 	}
+	// console.log(turnCount);
+	// console.log(turn);
 	//==ADD SELECTED CLASS AND SET PIECE POSITION==
 	if (eClassList.contains(`${turn}Piece`)) {
 		pieces.forEach((p, idx) => {
@@ -165,8 +170,10 @@ boardContainer.addEventListener('click', (e) => {
 	}
 	//==MOVE PIECE TO SELECTED VALID SQUARE========
 	if (eClassList.contains('blackSquare') && eClassList.contains('validMove') && target.children.length === 0) {
-		console.log('valid move');
+		// console.log('valid move');
 		target.append(selectedPiece);
+		// console.log(turn);
+		checkJump(e);
 		selectedPiece.classList.remove('selected');
 		removeValidClass();
 		pieceIsSelected = false;
@@ -182,8 +189,8 @@ function getPiecePosition() {
 				if (sq.firstChild.classList.contains('selected')) {
 					pieceIdx = sqIdx;
 					pieceRow = idx;
-					console.log(`piece index: ${pieceIdx}`);
-					console.log(`piece row: ${pieceRow}`);
+					// console.log(`piece index: ${pieceIdx}`);
+					// console.log(`piece row: ${pieceRow}`);
 				}
 			}
 		});
@@ -192,6 +199,8 @@ function getPiecePosition() {
 
 //==VALID MOVE FUNCTION=======
 function validMove() {
+	let sqChildren;
+	// console.log('valid move called');
 	board.rows.forEach((row, idx) => {
 		row.row.squares.forEach((sq, sqidx) => {
 			sq.classList.remove('validMove');
@@ -199,13 +208,23 @@ function validMove() {
 		if (turn === 'black') {
 			if (idx === pieceRow - 1) {
 				row.row.squares.forEach((sq, sqidx) => {
-					let sqChildren = [ ...sq.children ];
+					//sqChildren variable lets you access the class list of the piece that occupies the square
+					sqChildren = [ ...sq.children ];
+					// console.log(sqChildren);
 					if (sqChildren.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
 						sq.classList.add('validMove');
-					} else if (sq.children.length > 0 && sqChildren[0].classList.contains(`${opponent}Piece`)) {
+					} else if (
+						//THIS LOGIC ONLY WORKS ON THE BLACK PIECES
+						sq.children.length > 0 &&
+						sqChildren[0].classList.contains(`${opponent}Piece`) &&
+						(sqidx === pieceIdx + 1 || sqidx === pieceIdx - 1)
+					) {
 						//JUMPABLE PIECE LOGIC*******************************************
-
-						console.log(sqChildren);
+						jumpablePieceRow = idx;
+						jumpablePieceIdx = sqidx;
+						jumpablePieces.push(sqChildren[0]);
+						// console.log(sqChildren[0]);
+						setJump(jumpablePieces, jumpablePieceRow, jumpablePieceIdx);
 					}
 					//STILL NEEDS WORK
 					//********************************************************************
@@ -213,7 +232,9 @@ function validMove() {
 			}
 		} else {
 			if (idx === pieceRow + 1) {
+				// console.log(row);
 				row.row.squares.forEach((sq, sqidx) => {
+					sqChildren = [ ...sq.children ];
 					if (sq.children.length === 0 && (sqidx === pieceIdx - 1 || sqidx === pieceIdx + 1)) {
 						sq.classList.add('validMove');
 					}
@@ -231,13 +252,76 @@ function removeValidClass() {
 	});
 }
 
+function setJump(jumpablePieces, jumpablePieceRow, jumpablePieceIdx) {
+	board.rows.forEach((row, idx) => {
+		row.row.squares.forEach((sq, sqidx) => {
+			if (
+				idx === jumpablePieceRow - 1 &&
+				(sqidx === jumpablePieceIdx + 1 || sqidx === jumpablePieceIdx - 1) &&
+				sq.children.length < 1
+			) {
+				sq.classList.add('validMove');
+			}
+		});
+	});
+}
+
+function emptyJumpable() {
+	for (let p of jumpablePieces) {
+		jumpablePieces.pop(p);
+	}
+}
+
+let jumpToRow;
+let jumpToSq;
+function checkJump(e) {
+	// console.log(e);
+	board.rows.forEach((row, idx) => {
+		if (turn === 'black') {
+			if (idx === pieceRow - 2) {
+				row.row.squares.forEach((sq, sqidx) => {
+					let sqChildren = [ ...sq.children ];
+					// console.log(sqChildren);
+					if (sqChildren.length > 0) {
+						jumpToRow = idx;
+						jumpToSq = sqidx;
+						removePiece();
+					}
+					// console.log(sqChildren[0]);
+				});
+			}
+		}
+	});
+}
+
+function removePiece(piece) {
+	board.rows.forEach((row, idx) => {
+		row.row.squares.forEach((sq, sqidx) => {
+			let sqChildren = [ ...sq.children ];
+			if (sqChildren.length > 0 && idx === jumpToRow + 1 && sqidx === jumpToSq + 1) {
+				sqChildren[0].classList.add('jumped');
+				// console.log(sq);
+			}
+		});
+	});
+	console.log(pieces);
+	pieces.forEach((p) => {
+		// console.log(p);
+		if (p.classList.contains('jumped')) {
+			pieces.pop(p);
+		}
+	});
+}
+
 //JUMPABLE PIECE LOGIC================
-// function jumpablePiece(sq, sqidx, sqChildren){
+// function jumpablePiece(sq, sqidx, sqChildren, rowidx){
 //check if adjacent squares are occupied by opposing color piece
-// if(sqidx)
+// if(sqidx === pieceIdx + 1){
+
+// }
 //check if next adjacent square in same direction is occupied by any piece
 //check if there are any opposing pieces in either adjacent square
-//check if the sqaure behind opposing piece in same direction is open
+//check if the square behind opposing piece in same direction is open
 // }
 
 //VALID MOVE LOGIC=========================================
